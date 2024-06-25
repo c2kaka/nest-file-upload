@@ -1,10 +1,33 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Query,
+  UploadedFiles,
+  UseInterceptors,
+} from '@nestjs/common';
 import { PersonService } from './person.service';
 import { CreatePersonDto } from './dto/create-person.dto';
+import { AnyFilesInterceptor } from '@nestjs/platform-express';
+import { MulterOptions } from '@nestjs/platform-express/multer/interfaces/multer-options.interface';
 
 @Controller('api/person')
 export class PersonController {
   constructor(private readonly personService: PersonService) {}
+
+  @Post('file')
+  @UseInterceptors(
+    AnyFilesInterceptor({ dest: 'uploads/' } as MulterOptions) as any,
+  )
+  uploadFile(
+    @Body() createPersonDto: CreatePersonDto,
+    @UploadedFiles() files: Array<Express.Multer.File>,
+  ) {
+    console.log(files);
+    return `received: ${JSON.stringify(createPersonDto)}`;
+  }
 
   @Post()
   create(@Body() createPersonDto: CreatePersonDto) {
