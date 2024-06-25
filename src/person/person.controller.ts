@@ -1,9 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { PersonService } from './person.service';
 import { CreatePersonDto } from './dto/create-person.dto';
-import { UpdatePersonDto } from './dto/update-person.dto';
 
-@Controller('person')
+@Controller('api/person')
 export class PersonController {
   constructor(private readonly personService: PersonService) {}
 
@@ -12,23 +11,36 @@ export class PersonController {
     return this.personService.create(createPersonDto);
   }
 
-  @Get()
-  findAll() {
-    return this.personService.findAll();
+  // query param get
+  @Get('find')
+  queryParam(@Query('name') name: string, @Query('age') age: string) {
+    return `return name: ${name}, age: ${age} person`;
   }
 
+  // url param get
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.personService.findOne(+id);
+  urlParam(@Param('id') id: string) {
+    return `This action returns a #${id} person`;
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePersonDto: UpdatePersonDto) {
-    return this.personService.update(+id, updatePersonDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.personService.remove(+id);
-  }
+  //
+  // @Get()
+  // findAll() {
+  //   return this.personService.findAll();
+  // }
+  //
+  // @Get(':id')
+  // findOne(@Param('id') id: string) {
+  //   return this.personService.findOne(+id);
+  // }
+  //
+  // @Patch(':id')
+  // update(@Param('id') id: string, @Body() updatePersonDto: UpdatePersonDto) {
+  //   return this.personService.update(+id, updatePersonDto);
+  // }
+  //
+  // @Delete(':id')
+  // remove(@Param('id') id: string) {
+  //   return this.personService.remove(+id);
+  // }
 }
